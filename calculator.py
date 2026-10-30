@@ -1,4 +1,5 @@
 """Простой калькулятор с основными арифметическими операциями."""
+import math
 
 
 def add(a, b):
@@ -23,17 +24,42 @@ def divide(a, b):
     return a / b
 
 
-OPERATIONS = {"+": add, "-": subtract, "*": multiply, "/": divide}
+def power(a, b):
+    """Возвращает a в степени b."""
+    return a ** b
+
+
+def square_root(a):
+    """Возвращает квадратный корень из a; для a < 0 — ValueError."""
+    if a < 0:
+        raise ValueError("Корень из отрицательного числа не определён")
+    return math.sqrt(a)
+
+
+OPERATIONS = {"+": add, "-": subtract, "*": multiply, "/": divide,
+              "^": power}
 
 
 def calculate(expression):
-    """Вычисляет выражение вида '2 + 3'."""
+    """Вычисляет выражение вида '2 + 3' или 'sqrt 16'."""
+    parts = expression.split()
+    if len(parts) == 2 and parts[0] == "sqrt":
+        return square_root(float(parts[1]))
+    if len(parts) != 3:
+        raise ValueError("Формат выражения: число операция число")
+    left, operator, right = parts
+    if operator not in OPERATIONS:
+        raise ValueError(f"Неизвестная операция: {operator}")
+    return OPERATIONS[operator](float(left), float(right))
+
+
+def main():
+    """Читает выражение и выводит результат или сообщение об ошибке."""
     try:
-        left, operator, right = expression.split()
-        return OPERATIONS[operator](float(left), float(right))
-    except KeyError:
-        raise ValueError(f"Неизвестная операция: {operator}") from None
+        print(calculate(input("Выражение (например, 2 + 3): ")))
+    except ValueError as error:
+        print(f"Ошибка: {error}")
 
 
 if __name__ == "__main__":
-    print(calculate(input("Выражение (например, 2 + 3): ")))
+    main()
