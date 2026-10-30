@@ -1,4 +1,5 @@
 """Простой калькулятор с основными арифметическими операциями."""
+import math
 
 
 def add(a, b):
@@ -23,13 +24,27 @@ def divide(a, b):
     return a / b
 
 
-OPERATIONS = {"+": add, "-": subtract, "*": multiply, "/": divide}
+def power(a, b):
+    """Возвращает a в степени b."""
+    return a ** b
+
+
+def square_root(a, _=None):
+    """Возвращает квадратный корень из a."""
+    return math.sqrt(a)
+
+
+OPERATIONS = {"+": add, "-": subtract, "*": multiply, "/": divide,
+              "^": power}
 
 
 def calculate(expression):
-    """Вычисляет выражение вида '2 + 3'."""
+    """Вычисляет выражение вида '2 + 3' или 'sqrt 16'."""
+    parts = expression.split()
+    if len(parts) == 2 and parts[0] == "sqrt":
+        return square_root(float(parts[1]))
     try:
-        left, operator, right = expression.split()
+        left, operator, right = parts
         return OPERATIONS[operator](float(left), float(right))
     except KeyError:
         raise ValueError(f"Неизвестная операция: {operator}") from None
